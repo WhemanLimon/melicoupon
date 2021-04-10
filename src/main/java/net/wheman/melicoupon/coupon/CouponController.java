@@ -33,7 +33,7 @@ public class CouponController {
         Double total = (double) 0;
         for (String item : favItems) {
             var price = meliService.GetItemPriceById(item);    
-            if(price != null){
+            if(price != null && price > 0){
                 itemsWithPrice.put(item, price);
             }
         }

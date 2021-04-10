@@ -13,8 +13,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
+import org.springframework.http.HttpStatus;
+
 
 public class MeliService {
+
     public Double GetItemPriceById(String itemId){
         
         HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("https://api.mercadolibre.com/items/%s", itemId)))
@@ -28,12 +31,14 @@ public class MeliService {
         try {
             response = client.send(request, BodyHandlers.ofString());
             responseBody = response.body();
+            if(response.statusCode() != HttpStatus.OK.value()){
+                return (double) 0;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
         
         ObjectMapper mapper = new ObjectMapper();
         TypeFactory factory = mapper.getTypeFactory();
