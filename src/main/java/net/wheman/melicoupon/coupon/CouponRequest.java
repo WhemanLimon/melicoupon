@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class CouponRequest {
     private String[] item_ids;
-    private Float amount;
+    private Double amount;
 }

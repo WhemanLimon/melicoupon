@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 
 public class MeliService {
-    public Float GetItemPriceById(String itemId){
+    public Double GetItemPriceById(String itemId){
         
         HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("https://api.mercadolibre.com/items/%s", itemId)))
                                             .header("Content-Type", "application/json")

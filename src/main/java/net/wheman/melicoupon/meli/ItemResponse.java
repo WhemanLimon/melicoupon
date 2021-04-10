@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class ItemResponse {
         private String id;
         private String title;
-        private Float price;
+        private Double price;
 }

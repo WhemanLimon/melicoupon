@@ -1,6 +1,11 @@
 package net.wheman.melicoupon.coupon;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,25 +20,45 @@ public class CouponController {
     public CouponResponse GetCoupon(@RequestBody CouponRequest request) {
         var itemsForCoupon = getItemsForCoupon(request.getItem_ids(), request.getAmount());
         String[] items = itemsForCoupon.keySet().toArray(new String[ itemsForCoupon.keySet().size()]);
-        Float total = (float) 0;
-        for (Float item : itemsForCoupon.values()) {
+        Double total = (double) 0;
+        for (Double item : itemsForCoupon.values()) {
             total += item;
         }
         return new CouponResponse(items, total);
     }
     
-    private HashMap<String, Float> getItemsForCoupon(String[]favItems, Float maxAmount){
+    private HashMap<String, Double> getItemsForCoupon(String[]favItems, Double maxAmount){
         var meliService = new MeliService();
-        HashMap<String, Float> itemsWithPrice = new HashMap<String, Float>();
-        Float total = (float) 0;
+        HashMap<String, Double> itemsWithPrice = new HashMap<String, Double>();
+        Double total = (double) 0;
         for (String item : favItems) {
             var price = meliService.GetItemPriceById(item);    
-            if(price != null && (total + price < maxAmount )){
+            if(price != null){
                 itemsWithPrice.put(item, price);
-                total += price;
             }
         }
-        
-        return itemsWithPrice;
+
+        var sortedItems = itemsWithPrice.entrySet()
+                .stream()
+                .sorted(Comparator.comparingDouble(i -> -i.getValue()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, 
+                        Map.Entry::getValue, 
+                        (a, b) -> { throw new AssertionError(); }, 
+                        LinkedHashMap::new
+                ));
+        HashMap<String, Double> filteredItemsWithPrice = new HashMap<String, Double>();
+        Iterator<Map.Entry<String, Double>> it = sortedItems.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, Double> entry = (Map.Entry<String, Double>)it.next();
+            String key = entry.getKey().toString();
+            Double value = (double)entry.getValue();
+            if(total + value < maxAmount){
+                filteredItemsWithPrice.put(key, value);
+                total += value;
+            }
+            it.remove();
+        }
+        return filteredItemsWithPrice;
     }
 }
