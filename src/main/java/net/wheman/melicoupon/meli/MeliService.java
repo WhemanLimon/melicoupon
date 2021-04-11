@@ -32,7 +32,7 @@ public class MeliService {
             response = client.send(request, BodyHandlers.ofString());
             responseBody = response.body();
             if(response.statusCode() != HttpStatus.OK.value()){
-                return (double) 0;
+                return null;
             }
         } catch (IOException e) {
             e.printStackTrace();
