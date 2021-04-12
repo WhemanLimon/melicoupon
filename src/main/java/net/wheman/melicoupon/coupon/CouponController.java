@@ -23,6 +23,11 @@ public class CouponController {
         }
         return new CouponResponse(items, total);
     }
+
+    @GetMapping("/coupon/stats")
+    public CouponStatistics[] GetCouponStats(){
+        return new CouponStatistics[]{new CouponStatistics("MLA1", 10), new CouponStatistics("MLA2", 15)};
+    }
  
     private HashMap<String, Double> getItemsForCoupon(String[]favItems, Double maxAmount){
         var meliService = new MeliService();
