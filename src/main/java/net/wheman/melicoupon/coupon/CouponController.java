@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.wheman.melicoupon.meli.MeliService;
-import net.wheman.melicoupon.datakeeper.MapMemory;
+import net.wheman.melicoupon.datakeeper.ItemMemory;
 import net.wheman.melicoupon.helper.KnapSackHelper;
 
 @RestController
@@ -29,8 +29,8 @@ public class CouponController {
 
     @GetMapping("/coupon/stats")
     public CouponStatistics[] GetCouponStats(){
-        var top5items = MapMemory.GetTopFive();
-        Iterator<Entry<String, Long>> iterator = top5items.entrySet().iterator();
+        var top5items = ItemMemory.GetTopFive();
+        Iterator<Entry<String, Integer>> iterator = top5items.entrySet().iterator();
         CouponStatistics[] top5 = new CouponStatistics[top5items.size()];
         int i = 0;
         while (iterator.hasNext()) {
@@ -45,14 +45,20 @@ public class CouponController {
         var meliService = new MeliService();
         HashMap<String, Double> itemsWithPrice = new HashMap<String, Double>();
         for (String item : favItems) {
-            var price = meliService.GetItemPriceById(item);    
-            if(price != null){
-                itemsWithPrice.put(item, price);
+            var itemFromCache = ItemMemory.GetItemByIdFromCache(item);
+            if(itemFromCache != null && !itemFromCache.ItemCacheIsExpired()){
+                itemsWithPrice.put(itemFromCache.getId_item(), itemFromCache.getPrice());
+            }else{
+                var price = meliService.GetItemPriceById(item);    
+                if(price != null){
+                    itemsWithPrice.put(item, price);
+                    ItemMemory.AddItemToCache(item, price);
+                }
             }
         }
         
         var selectedItems = KnapSackHelper.BackTrackDp(itemsWithPrice, maxAmount);
-        selectedItems.keySet().stream().forEach(i -> MapMemory.AddItemCount(i));
+        selectedItems.entrySet().stream().forEach(i -> ItemMemory.IncreaseItemCount(i.getKey()));
 
         return selectedItems;
     }
