@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS items;
+
+CREATE TABLE FAVORITE_ITEMS (
+    id_item VARCHAR(20) PRIMARY KEY,
+    fav_count INT
+);
