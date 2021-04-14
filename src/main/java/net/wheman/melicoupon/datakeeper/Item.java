@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Item {
+public class Item implements Comparable<Item>{
     private String id_item;
     private Double price;
     private Instant lastPriceCheck;
@@ -18,5 +18,10 @@ public class Item {
 
     public Boolean ItemCacheIsExpired(){
         return ChronoUnit.HOURS.between(lastPriceCheck, Instant.now()) > 1;
+    }
+
+    @Override
+    public int compareTo(Item o) {
+        return this.id_item.compareTo(o.id_item);
     }
 }

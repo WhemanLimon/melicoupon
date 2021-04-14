@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Instant;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -19,7 +20,7 @@ import org.springframework.http.HttpStatus;
 public class MeliService {
 
     public Double GetItemPriceById(String itemId){
-        
+        System.out.println(Instant.now().toString() + ";" + itemId + ";" + "Start MeliService.GetItemPriceById()");
         HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("https://api.mercadolibre.com/items/%s", itemId)))
                                             .header("Content-Type", "application/json")
                                             .GET()
@@ -51,7 +52,7 @@ public class MeliService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
+        System.out.println(Instant.now().toString() + ";" + itemId + ";" + "End MeliService.GetItemPriceById()");
         return itemResponse.getPrice();
     }
 }
