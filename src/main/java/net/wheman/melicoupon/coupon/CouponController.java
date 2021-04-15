@@ -1,13 +1,18 @@
 package net.wheman.melicoupon.coupon;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.collect.Lists;
+
 import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,8 +58,9 @@ public class CouponController {
         ItemMemory.SortItemsMemory();
         var meliService = new MeliService();
         HashMap<String, Double> itemsWithPrice = new HashMap<String, Double>();
-        ExecutorService executor = Executors.newFixedThreadPool(20);
-        
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<String> meliItems = new ArrayList<String>();
+
         Arrays.stream(favItems).forEach(fi -> {
             if(ItemMemory.getCachedItems().stream().anyMatch(ci -> fi.equals(ci.getId_item()) && !ci.ItemCacheIsExpired())){
                 executor.submit(() -> { 
@@ -62,15 +68,20 @@ public class CouponController {
                         itemsWithPrice.put(itemFromCache.getId_item(), itemFromCache.getPrice());
                 });
             }else{
-                executor.submit(() -> {
-                    var price = meliService.GetItemPriceById(fi);    
-                    if(price != null) {
-                        itemsWithPrice.put(fi, price);
-                        ItemMemory.AddItemToCache(fi, price);
-                    }
-                });
+                meliItems.add(fi);
             }
         });
+
+        List<List<String>> subsets = Lists.partition(meliItems, 20);
+        for (List<String> list : subsets) {
+            executor.submit(() -> {
+                HashMap<String, Double> price = meliService.GetItemPricesByIds(String.join(",", list));    
+                price.entrySet().stream().forEach(i -> {
+                    itemsWithPrice.put(i.getKey(), i.getValue());
+                    ItemMemory.AddItemToCache(i.getKey(), i.getValue());
+                });
+            });
+        }
 
         try {
             executor.shutdown();
@@ -78,10 +89,10 @@ public class CouponController {
         } catch (Exception e) {
         }
 
+        System.out.println(Instant.now().toString() + ";" + "ALL ITEMS" + ";" + "Start KnapSackHelper.BackTrackDp");
         var selectedItems = KnapSackHelper.BackTrackDp(itemsWithPrice, maxAmount);
-        System.out.println(Instant.now().toString() + ";" + "ALL ITEMS" + ";" + "Start IncreaseItemCount");
+        System.out.println(Instant.now().toString() + ";" + "ALL ITEMS" + ";" + "End KnapSackHelper.BackTrackDp");
         selectedItems.entrySet().stream().forEach(i -> ItemMemory.IncreaseItemCount(i.getKey()));
-        System.out.println(Instant.now().toString() + ";" + "ALL ITEMS" + ";" + "End IncreaseItemCount");
         System.out.println(Instant.now().toString() + ";" + "ALL ITEMS" + ";" + "End getItemsForCoupon()");
         return selectedItems;
     }
