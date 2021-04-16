@@ -3,6 +3,10 @@ package net.wheman.melicoupon.helper;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Map.Entry;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Maps;
 
 /**
  * This class acts as a helper for the <b>KnapSack Problem algorithm</b>
@@ -18,15 +22,26 @@ import java.util.Optional;
 public class KnapSackHelper {
 
     /**
-     * Executes the <b>KnapSack Problem algorithm</b> logic.
+     * Calculates the items that will componse the coupon by executing the <b>KnapSack Problem algorithm</b> logic.
+     * <p>
+     * If there is an item that matches exactly the target price it is returned and KP algorithm is skipped.
      * @param items favorite items being considered into coupon's limit. 
      * @param target the coupon's price limit.
      * @return {@link HashMap} with the subset of items selected for the coupon.
      */
     public static HashMap<String, Double> CalculateItemsSubset(HashMap<String, Double> items, Double target){
-        Double[] prices = items.values().toArray(new Double[items.size()]);
-        int pricesLength = prices.length;
         HashMap<String, Double> selectedItems = new HashMap<String, Double>();
+        items = new HashMap<String, Double>(Maps.filterEntries(items, e -> e.getValue() <= target));
+
+        Double[] prices = Collections2.filter(items.values(), item -> item <= target).toArray(Double[]::new);
+        Optional<Entry<String, Double>> instantMatch = items.entrySet().stream().filter(i -> i.getValue().equals(target)).findFirst();
+        if(instantMatch.isPresent())
+        {
+            selectedItems.put(instantMatch.get().getKey(), instantMatch.get().getValue());
+            return selectedItems;
+        }
+        
+        int pricesLength = prices.length;
 
         int sum, i, k;
         Double dp[][] = new Double[pricesLength + 1][(int) (target + 1)];
