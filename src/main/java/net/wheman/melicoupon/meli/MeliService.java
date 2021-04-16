@@ -27,7 +27,7 @@ public class MeliService {
      * @param itemIds A string of IDs separated with 'comma'. ie.: {@code MLA1,MLA2,MLA3...}
      * @return A key-value pair with the item ID and its price.
      */
-    public HashMap<String, Double> GetItemPricesByIds(String itemIds){
+    public static HashMap<String, Double> GetItemPricesByIds(String itemIds){
 
         HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("https://api.mercadolibre.com/items?ids=%s", itemIds)))
                                             .header("Content-Type", "application/json")

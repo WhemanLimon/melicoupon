@@ -11,8 +11,12 @@ import java.util.stream.Collectors;
 
 /**
  * This class contains a set of static methods to help manage an in-memory List
- * of {@linkplain Item}. It acts as a cache for speeding up "MELI's API Items"
- * invoke by reducing round-trips for items already retrieved. It also keep keep
+ * of {@linkplain Item}. 
+ * <p>
+ * It acts as a cache for speeding up "MELI's API Items"
+ * invoke by reducing round-trips for items already retrieved. 
+ * <p>
+ * It also keep keep
  * a record of how many times an Item has been used for coupons and offers a
  * function to retrieve top five of most used items.
  */
