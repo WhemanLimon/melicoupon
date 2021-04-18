@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.wheman.melicoupon.meli.MeliService;
+import net.wheman.melicoupon.strategy.KnapSack;
+import net.wheman.melicoupon.strategy.StrategyHandler;
+import net.wheman.melicoupon.strategy.TopBottom;
 import net.wheman.melicoupon.datakeeper.Item;
 import net.wheman.melicoupon.datakeeper.ItemMemory;
-import net.wheman.melicoupon.helper.KnapSackHelper;
 
 /** 
  * This class is a controller for handling <b>Coupon API requests</b>. 
@@ -109,7 +111,8 @@ public class CouponController {
         } catch (Exception e) {
         }
 
-        HashMap<String, Double> selectedItems = KnapSackHelper.CalculateItemsSubset(itemsWithPrice, maxAmount);
+        StrategyHandler<TopBottom> strategy = new TopBottom();
+        HashMap<String, Double> selectedItems = strategy.ApplyStrategy(itemsWithPrice, maxAmount);
         selectedItems.entrySet().stream().forEach(i -> ItemMemory.IncreaseItemCount(i.getKey()));
         return selectedItems;
     }

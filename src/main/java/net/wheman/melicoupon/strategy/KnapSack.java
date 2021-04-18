@@ -1,4 +1,4 @@
-package net.wheman.melicoupon.helper;
+package net.wheman.melicoupon.strategy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import com.google.common.collect.Maps;
  * keeping track of the items that belongs to the subset itselfe, once the subset is defined 
  * it reverses the algorithm in order to retrieve the items IDs selected for the coupon.
 */
-public class KnapSackHelper {
+public class KnapSack implements StrategyHandler<KnapSack> {
 
     /**
      * Calculates the items that will componse the coupon by executing the <b>KnapSack Problem algorithm</b> logic.
@@ -29,7 +29,8 @@ public class KnapSackHelper {
      * @param target the coupon's price limit.
      * @return {@link HashMap} with the subset of items selected for the coupon.
      */
-    public static HashMap<String, Double> CalculateItemsSubset(HashMap<String, Double> items, Double target){
+    @Override
+    public HashMap<String, Double> ApplyStrategy(HashMap<String, Double> items, Double target) {
         HashMap<String, Double> selectedItems = new HashMap<String, Double>();
         items = new HashMap<String, Double>(Maps.filterEntries(items, e -> e.getValue() <= target));
 
@@ -38,7 +39,7 @@ public class KnapSackHelper {
         if(instantMatch.isPresent())
         {
             selectedItems.put(instantMatch.get().getKey(), instantMatch.get().getValue());
-            return selectedItems;
+            return (HashMap<String, Double>) selectedItems;
         }
         
         int pricesLength = prices.length;
@@ -64,7 +65,7 @@ public class KnapSackHelper {
         }
 
         getItemsSubsetIds(0, 0, dp, items, selectedItems);
-        return selectedItems;
+        return (HashMap<String, Double>) selectedItems;
     }
 
     /**
