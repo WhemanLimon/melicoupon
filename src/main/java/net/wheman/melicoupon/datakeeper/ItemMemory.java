@@ -3,10 +3,10 @@ package net.wheman.melicoupon.datakeeper;
 import java.time.Instant;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -24,19 +24,20 @@ public class ItemMemory {
 
     private static List<Item> cachedItems = new ArrayList<Item>();
 
-    public static List<Item> getCachedItems() {
-        return cachedItems;
-    };
-
     /**
-     * Retrieves an item from the cache searching by the item ID.
+     * Retrieves items from the cache searching by the item ID.
      * 
-     * @param itemId The ID of the Item to retrieve.
-     * @return A single {@linkplain Item}
+     * @param item_ids The IDs of the items to retrieve.
+     * @return a map of the items
      */
-    public static Item GetItemByIdFromCache(String itemId) {
-        Optional<Item> item = cachedItems.stream().filter(i -> itemId.equals(i.getId_item())).findFirst();
-        return item.isPresent() ? item.get() : null;
+    public static HashMap<String, Double> GetItemsByIdsFromCache(String[] item_ids){
+        HashMap<String, Double> cacheItems = new HashMap<String, Double>();
+
+        cachedItems.stream()
+                    .filter(i -> Arrays.stream(item_ids).anyMatch(f -> !i.IsCacheExpired() && i.getId_item().equals(f)))
+                    .forEach(i -> cacheItems.put(i.getId_item(), i.getPrice()));
+
+        return cacheItems;
     }
 
     /**
@@ -53,11 +54,12 @@ public class ItemMemory {
     /**
      * Increases by 1 the amount of times an {@linkplain Item} has been used in a coupon.
      * 
-     * @param itemId The ID of the item to increase count
+     * @param item_ids The IDs of the items to increase count
      */
-    public static void IncreaseItemCount(String itemId) {
-        Item cacheItem = GetItemByIdFromCache(itemId);
-        cacheItem.setFavCount(cacheItem.getFavCount() + 1);
+    public static void IncreaseItemsCount(String[] item_ids){
+        cachedItems.stream()
+        .filter(i -> Arrays.stream(item_ids).anyMatch(f -> !i.IsCacheExpired() && i.getId_item().equals(f)))
+        .forEach(i -> i.setFavCount(i.getFavCount() + 1));
     }
 
     /**

@@ -9,22 +9,18 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 
 /**
- * This class acts as a helper for the <b>KnapSack Problem algorithm</b>
- * <p>
- * The purpose of this algorithm is given a set of items with a price 
- * determine which items are included in a subset so that the total price 
- * for the subset is equal or nearest to the limit.
+ * This class represents a Strategy based on <b>KnapSack Problem algorithm</b>
  * <p>
  * Considering KnapSack Problem purpose is to find the final total price of the subset without 
- * keeping track of the items that belongs to the subset itselfe, once the subset is defined 
+ * keeping track of the items that belongs to the subset itself, once the subset is defined 
  * it reverses the algorithm in order to retrieve the items IDs selected for the coupon.
 */
-public class KnapSack implements StrategyHandler<KnapSack> {
+public class KnapSack implements StrategyHandler {
 
     /**
-     * Calculates the items that will componse the coupon by executing the <b>KnapSack Problem algorithm</b> logic.
+     * Calculates the items that will componse the coupon by applying <b>KnapSack Problem</b> strategy.
      * <p>
-     * If there is an item that matches exactly the target price it is returned and KP algorithm is skipped.
+     * If there is an item that matches exactly the target price it is returned and KnapSack algorithm is skipped.
      * @param items favorite items being considered into coupon's limit. 
      * @param target the coupon's price limit.
      * @return {@link HashMap} with the subset of items selected for the coupon.
@@ -32,7 +28,7 @@ public class KnapSack implements StrategyHandler<KnapSack> {
     @Override
     public HashMap<String, Double> ApplyStrategy(HashMap<String, Double> items, Double target) {
         HashMap<String, Double> selectedItems = new HashMap<String, Double>();
-        items = new HashMap<String, Double>(Maps.filterEntries(items, e -> e.getValue() <= target));
+        items = new HashMap<String, Double>(Maps.filterEntries(items, e -> e.getValue() != null && e.getValue() <= target));
 
         Double[] prices = Collections2.filter(items.values(), item -> item <= target).toArray(Double[]::new);
         Optional<Entry<String, Double>> instantMatch = items.entrySet().stream().filter(i -> i.getValue().equals(target)).findFirst();

@@ -60,10 +60,9 @@ public class MeliService {
         }
         HashMap<String, Double> itemsPrice = new HashMap<String, Double>();
         for (ItemsResponse it : itemResponse) {
-            if(it.getBody().getPrice() != null){
-                itemsPrice.put(it.getBody().getId(), it.getBody().getPrice());
-            }
+            itemsPrice.put(it.getBody().getId(), it.getBody().getPrice());
         }
+
         return itemsPrice;
     }
 }
