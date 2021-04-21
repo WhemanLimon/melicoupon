@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class CouponStatistics{
+public class CouponStatisticsResponse{
     public String id;
     public long quantity;
 }

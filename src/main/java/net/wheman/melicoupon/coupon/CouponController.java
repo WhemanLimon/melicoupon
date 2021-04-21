@@ -55,13 +55,13 @@ public class CouponController {
 
     /**
      * Returns a top five list of statistics for the most used items among all coupons generated.
-     * @return A list of {@link CouponStatistics}
+     * @return A list of {@link CouponStatisticsResponse}
      */
     @GetMapping("/coupon/stats")
-    public List<CouponStatistics> GetCouponStats(){
-        List<CouponStatistics> topFiveItems = new ArrayList<CouponStatistics>();
+    public List<CouponStatisticsResponse> GetCouponStats(){
+        List<CouponStatisticsResponse> topFiveItems = new ArrayList<CouponStatisticsResponse>();
         ItemMemory.GetTopFiveItems().entrySet().stream().forEach(i -> {
-            topFiveItems.add(new CouponStatistics(i.getKey(), i.getValue()));
+            topFiveItems.add(new CouponStatisticsResponse(i.getKey(), i.getValue()));
         });
         return topFiveItems;
     }
