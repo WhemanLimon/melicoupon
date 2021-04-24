@@ -45,14 +45,14 @@ public class DataKeeperTests {
 
     @Test
     @Order(2)
-    void increaseItemCount_thenRetrieveTopFive(){
+    void increaseItemCount_thenRetrieveTop(){
         itemMemory.IncreaseItemsCount(request1.keySet().toArray(new String[request1.size()]));
-        assertTrue(itemMemory.GetTopFiveItems().size() > 0);
+        assertTrue(itemMemory.GetTopItems().size() > 0);
     }
     
     @Test
     @Order(3)
-    void retrieveTopFive(){
-        assertTrue(itemMemory.GetTopFiveItems().size() > 0);
+    void retrieveTop(){
+        assertTrue(itemMemory.GetTopItems().size() > 0);
     }
 }

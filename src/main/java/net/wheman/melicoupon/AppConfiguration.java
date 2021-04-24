@@ -30,6 +30,9 @@ public class AppConfiguration {
     @Value("${cache.item.price.durationhours}")
     private int CacheItemPriceDurationHours;
 
+    @Value("${cache.items.top.count}")
+    private int CacheItemsTopCount;
+
     public AppConfiguration() {
         
     }

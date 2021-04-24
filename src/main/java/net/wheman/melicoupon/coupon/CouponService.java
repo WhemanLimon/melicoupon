@@ -56,7 +56,7 @@ public class CouponService {
         List<List<String>> subsets = Lists.partition(meliItems, appConfiguration.getMeliItemsApiMaxRequest());
         for (List<String> list : subsets) {
             executor.submit(() -> {
-                HashMap<String, Double> price = meliService.GetItemPricesByIds(String.join(",", list));    
+                HashMap<String, Double> price = meliService.GetItemPricesByIds(String.join(",", list));
                 price.entrySet().stream().forEach(i -> {
                     itemsWithPrice.put(i.getKey(), i.getValue());
                     itemMemory.AddItemToCache(i.getKey(), i.getValue());
@@ -76,11 +76,11 @@ public class CouponService {
     }
 
     /**
-     * Returns the top five most used items stored in the memory cache.
+     * Returns the top N most used items stored in the memory cache.
      * @return a map containing the items IDs and the count of times used.
      */
-    public HashMap<String, Integer> getTopFiveItems(){
-        return itemMemory.GetTopFiveItems();
+    public HashMap<String, Integer> getTopItems(){
+        return itemMemory.GetTopItems();
     }
     
 }

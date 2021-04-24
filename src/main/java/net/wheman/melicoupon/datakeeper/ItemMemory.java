@@ -24,7 +24,7 @@ import net.wheman.melicoupon.AppConfiguration;
  * <p>
  * It also keep keep
  * a record of how many times an Item has been used for coupons and offers a
- * function to retrieve top five of most used items.
+ * function to retrieve top N of most used items based on the value of the configuration parameter {@code cache.items.top.count}
  */
 @Repository
 public class ItemMemory {
@@ -81,12 +81,13 @@ public class ItemMemory {
     }
 
     /**
-     * Returns the top five most used items by coupons.
-     * @return A map of five entries with each item and its used count 
+     * Returns the top N most used items by coupons.
+     * Amount of items returned is based on the configuration parameter {@code cache.items.top.count}
+     * @return A map of N entries with each item and its used count 
      */
-    public HashMap<String, Integer> GetTopFiveItems() {
+    public HashMap<String, Integer> GetTopItems() {
         HashMap<String, Integer> items = cachedItems.stream().filter(i -> i.getFavCount() > 0)
-                .sorted(Comparator.comparingInt(e -> -e.getFavCount())).limit(5)
+                .sorted(Comparator.comparingInt(e -> -e.getFavCount())).limit(appConfiguration.getCacheItemsTopCount())
                 .collect(Collectors.toMap(Item::getId_item, Item::getFavCount, (a, b) -> {
                     throw new AssertionError();
                 }, LinkedHashMap::new));

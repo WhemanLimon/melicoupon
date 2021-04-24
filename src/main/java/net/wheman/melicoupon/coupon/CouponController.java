@@ -48,16 +48,17 @@ public class CouponController {
     }
 
     /**
-     * Returns a top five list of statistics for the most used items among all coupons generated.
+     * Returns a top N list of statistics for the most used items among all coupons generated. 
+     * Amount of items retrieved is setted by configuration parameter {@code cache.items.top.count}
      * @return A list of {@link CouponStatisticsResponse}
      */
     @GetMapping("/coupon/stats")
     public List<CouponStatisticsResponse> GetCouponStats(){
-        List<CouponStatisticsResponse> topFiveItems = new ArrayList<CouponStatisticsResponse>();
-        couponService.getTopFiveItems().entrySet().stream().forEach(i -> {
-            topFiveItems.add(new CouponStatisticsResponse(i.getKey(), i.getValue()));
+        List<CouponStatisticsResponse> topItems = new ArrayList<CouponStatisticsResponse>();
+        couponService.getTopItems().entrySet().stream().forEach(i -> {
+            topItems.add(new CouponStatisticsResponse(i.getKey(), i.getValue()));
         });
-        return topFiveItems;
+        return topItems;
     }
 
 }
