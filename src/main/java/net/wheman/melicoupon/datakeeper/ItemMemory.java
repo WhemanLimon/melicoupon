@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import net.wheman.melicoupon.AppConfiguration;
 
 /**
  * This class contains a set of static methods to help manage an in-memory List
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class ItemMemory {
+
+    @Autowired
+    private AppConfiguration appConfiguration;
 
     private static List<Item> cachedItems = new ArrayList<Item>();
 
@@ -59,7 +65,7 @@ public class ItemMemory {
             existingItem.get().setPrice(price);
             existingItem.get().setLastPriceCheck(Instant.now());
         }else{
-            cachedItems.add(new Item(itemId, price, Instant.now(), 0));
+            cachedItems.add(new Item(itemId, price, Instant.now(), 0, appConfiguration.getCacheItemPriceDurationHours()));
         }
     }
 

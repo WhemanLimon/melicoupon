@@ -26,12 +26,8 @@ import net.wheman.melicoupon.AppConfiguration;
 @Service
 public class MeliService {
 
-    private final AppConfiguration appConfiguration;
-
     @Autowired
-    public MeliService(AppConfiguration appConfiguration){
-        this.appConfiguration = appConfiguration;
-    }
+    private AppConfiguration appConfiguration;
 
     /**
      * Invokes MELI's Items API with the given item IDs to retrieve each item's price.

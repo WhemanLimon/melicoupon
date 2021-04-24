@@ -27,6 +27,9 @@ public class AppConfiguration {
     @Value("${meli.items.api.maxrequest}")
     private int MeliItemsApiMaxRequest;
 
+    @Value("${cache.item.price.durationhours}")
+    private int CacheItemPriceDurationHours;
+
     public AppConfiguration() {
         
     }
