@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import net.wheman.melicoupon.datakeeper.ItemMemory;
@@ -17,6 +18,9 @@ import net.wheman.melicoupon.datakeeper.ItemMemory;
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
 public class DataKeeperTests {
+
+    @Autowired
+    private ItemMemory itemMemory;
 
     private static HashMap<String, Double> request1 = new HashMap<String, Double>();
 
@@ -34,21 +38,21 @@ public class DataKeeperTests {
     @Order(1)
     void addMultipleItemsToCache_thenRetrieveItemFromCache(){
         for (Entry<String, Double> entry : request1.entrySet()) {
-            ItemMemory.AddItemToCache(entry.getKey(), entry.getValue());            
+            itemMemory.AddItemToCache(entry.getKey(), entry.getValue());            
         }
-        assertTrue(ItemMemory.GetItemsByIdsFromCache(request1.keySet().toArray(new String[request1.size()])).size() == request1.size());
+        assertTrue(itemMemory.GetItemsByIdsFromCache(request1.keySet().toArray(new String[request1.size()])).size() == request1.size());
     }
 
     @Test
     @Order(2)
     void increaseItemCount_thenRetrieveTopFive(){
-        ItemMemory.IncreaseItemsCount(request1.keySet().toArray(new String[request1.size()]));
-        assertTrue(ItemMemory.GetTopFiveItems().size() > 0);
+        itemMemory.IncreaseItemsCount(request1.keySet().toArray(new String[request1.size()]));
+        assertTrue(itemMemory.GetTopFiveItems().size() > 0);
     }
     
     @Test
     @Order(3)
     void retrieveTopFive(){
-        assertTrue(ItemMemory.GetTopFiveItems().size() > 0);
+        assertTrue(itemMemory.GetTopFiveItems().size() > 0);
     }
 }

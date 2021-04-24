@@ -2,12 +2,15 @@ package net.wheman.melicoupon.datakeeper;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Repository;
 
 /**
  * This class contains a set of static methods to help manage an in-memory List
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
  * a record of how many times an Item has been used for coupons and offers a
  * function to retrieve top five of most used items.
  */
+@Repository
 public class ItemMemory {
 
     private static List<Item> cachedItems = new ArrayList<Item>();
@@ -30,7 +34,7 @@ public class ItemMemory {
      * @param item_ids The IDs of the items to retrieve.
      * @return a map of the items
      */
-    public static HashMap<String, Double> GetItemsByIdsFromCache(String[] item_ids){
+    public HashMap<String, Double> GetItemsByIdsFromCache(String[] item_ids){
         HashMap<String, Double> cacheItems = new HashMap<String, Double>();
 
         cachedItems.stream()
@@ -43,12 +47,20 @@ public class ItemMemory {
     /**
      * Creates a new {@linkplain Item} with the given ID and price and stores it in the cache.
      * The value of LastPriceCheck attribute is initialized with {@link Instant} 'now' method.
+     * <p>
+     * If the item already exists it updates the price. This means that
      * 
      * @param itemId The ID of the Item to store
      * @param price   The price of the Item to store
      */
-    public static void AddItemToCache(String itemId, Double price) {
-        cachedItems.add(new Item(itemId, price, Instant.now(), 0));
+    public void AddItemToCache(String itemId, Double price) {
+        Optional<Item> existingItem = cachedItems.stream().filter(i -> i.getId_item().equals(itemId)).findFirst();
+        if(existingItem.isPresent()){
+            existingItem.get().setPrice(price);
+            existingItem.get().setLastPriceCheck(Instant.now());
+        }else{
+            cachedItems.add(new Item(itemId, price, Instant.now(), 0));
+        }
     }
 
     /**
@@ -56,7 +68,7 @@ public class ItemMemory {
      * 
      * @param item_ids The IDs of the items to increase count
      */
-    public static void IncreaseItemsCount(String[] item_ids){
+    public void IncreaseItemsCount(String[] item_ids){
         cachedItems.stream()
         .filter(i -> Arrays.stream(item_ids).anyMatch(f -> !i.IsCacheExpired() && i.getId_item().equals(f)))
         .forEach(i -> i.setFavCount(i.getFavCount() + 1));
@@ -66,7 +78,7 @@ public class ItemMemory {
      * Returns the top five most used items by coupons.
      * @return A map of five entries with each item and its used count 
      */
-    public static HashMap<String, Integer> GetTopFiveItems() {
+    public HashMap<String, Integer> GetTopFiveItems() {
         HashMap<String, Integer> items = cachedItems.stream().filter(i -> i.getFavCount() > 0)
                 .sorted(Comparator.comparingInt(e -> -e.getFavCount())).limit(5)
                 .collect(Collectors.toMap(Item::getId_item, Item::getFavCount, (a, b) -> {

@@ -14,12 +14,24 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import net.wheman.melicoupon.AppConfiguration;
 
 /**
  * This class represents a service used to invoke MELI's Items API using an {@link HttpClient} to make the request and process the response.
  */
+@Service
 public class MeliService {
+
+    private final AppConfiguration appConfiguration;
+
+    @Autowired
+    public MeliService(AppConfiguration appConfiguration){
+        this.appConfiguration = appConfiguration;
+    }
 
     /**
      * Invokes MELI's Items API with the given item IDs to retrieve each item's price.
@@ -27,9 +39,9 @@ public class MeliService {
      * @param itemIds A string of IDs separated with 'comma'. ie.: {@code MLA1,MLA2,MLA3...}
      * @return A key-value pair with the item ID and its price.
      */
-    public static HashMap<String, Double> GetItemPricesByIds(String itemIds){
+    public HashMap<String, Double> GetItemPricesByIds(String itemIds){
 
-        HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("https://api.mercadolibre.com/items?ids=%s", itemIds)))
+        HttpRequest request = HttpRequest.newBuilder(URI.create(String.format(appConfiguration.getMeliItemsApiUrl(), itemIds)))
                                             .header("Content-Type", "application/json")
                                             .GET()
                                             .build();
