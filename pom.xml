@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>net.wheman</groupId>
 	<artifactId>melicoupon</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>melicoupon</name>
 	<description>MELI Coupon Challenge</description>
 	<properties>
