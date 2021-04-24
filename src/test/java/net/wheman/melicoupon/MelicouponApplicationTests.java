@@ -1,5 +1,6 @@
 package net.wheman.melicoupon;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -21,10 +22,17 @@ class MelicouponApplicationTests {
 	void contextLoads() {
 	}
 
+
+
 	@Test
 	void checkApiIsStarted(){
 		List<CouponStatisticsResponse> result = couponController.GetCouponStats();
 		assertTrue(result != null);
+	}
+
+	@Test
+	void executeMain(){
+		assertDoesNotThrow(() -> MelicouponApplication.main(new String[0]));
 	}
 
 }

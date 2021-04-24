@@ -4,7 +4,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * This class represents an POJO item used in a coupon. 
@@ -12,7 +13,8 @@ import lombok.Data;
  * It serves as an object for holding also the timestamp {@link Instant} of when the item got an item's price from MELI's Items API.
  * This will be used to establish an validity period in which the item's price is expired and must be retrieved again from MELI's Items API.
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class Item {
 

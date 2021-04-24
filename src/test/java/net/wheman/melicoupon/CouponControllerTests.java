@@ -10,11 +10,18 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import net.wheman.melicoupon.coupon.CouponController;
+import net.wheman.melicoupon.coupon.CouponRequest;
+
 @SpringBootTest
 public class CouponControllerTests {
+
+    @Autowired
+    CouponController couponController;
 
     @Test
     public void givenEmptyItemId_whenItemIsRetrieved_then404IsReceived() throws IOException, InterruptedException {
@@ -50,6 +57,13 @@ public class CouponControllerTests {
         HttpClient client = HttpClient.newBuilder().build();
         HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
         assertTrue(response.statusCode() == HttpStatus.OK.value());
+    }
+
+    @Test
+    void fromControllerGetCoupon(){
+        String[] ids = {"MLA748119382","MLA749371233","MLA755290360","MLA784242531"};
+        CouponRequest request = new CouponRequest(ids, 10000.0);
+        assertTrue(couponController.GetCoupon(request).getTotal() > 0);
     }
     
 }

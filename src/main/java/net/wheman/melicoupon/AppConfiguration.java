@@ -3,13 +3,13 @@ package net.wheman.melicoupon;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import lombok.Data;
+import lombok.Getter;
 /**
  * This class represents a component used for mapping key values from the {@code application.properties} file that will be injected later for usage.
  */
 
 @Component
-@Data
+@Getter
 public class AppConfiguration {
 
     @Value("${strategy.knapsack.target.from}")
