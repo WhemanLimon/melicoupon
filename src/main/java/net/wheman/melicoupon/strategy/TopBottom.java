@@ -1,8 +1,11 @@
 package net.wheman.melicoupon.strategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -43,18 +46,22 @@ public class TopBottom implements StrategyHandler {
             return (HashMap<String, Double>) resultA;
         }
 
+        LinkedHashMap<String, Double> lMap = sortMap(items);
       
-        for (Entry<String, Double> entry : sortMap(items, "A").entrySet()) {
+        for (Entry<String, Double> entry : lMap.entrySet()) {
             if(sumA + entry.getValue() <= target){
                 resultA.put(entry.getKey(), entry.getValue());
                 sumA += entry.getValue();
             }
         }
 
-        for (Entry<String, Double> entry : sortMap(items, "D").entrySet()) {
-            if(sumD + entry.getValue() <= target){
-                resultD.put(entry.getKey(), entry.getValue());
-                sumD += entry.getValue();
+        List<String> listKeys = new ArrayList<String>(lMap.keySet());
+        Collections.reverse(listKeys);
+
+        for (String key : listKeys) {
+            if(sumD + lMap.get(key) <= target){
+                resultD.put(key, lMap.get(key));
+                sumD += lMap.get(key);
             }
         }
         
@@ -62,35 +69,20 @@ public class TopBottom implements StrategyHandler {
     }    
 
     /**
-     * Sorts the HashMap by its value ascending or descending
+     * Sorts the HashMap by its value ascendinging
      * @param unsortedMap A hashmap
      * @param sortOrder
      * @return
      */
-    private HashMap<String, Double> sortMap(HashMap<String, Double> unsortedMap, String sortOrder){
-        if(sortOrder.equals("A")){
-            HashMap<String, Double> sortedMap = unsortedMap.entrySet().stream()
-            .sorted(Comparator.comparingDouble(e -> e.getValue()))
-            .collect(Collectors.toMap(
-                    HashMap.Entry::getKey,
-                    HashMap.Entry::getValue,
-                    (a, b) -> { throw new AssertionError(); },
-                    LinkedHashMap::new
-            ));
-            return sortedMap;
-        }else{
-            HashMap<String, Double> sortedMap = unsortedMap.entrySet().stream()
-            .sorted(Comparator.comparingDouble(e -> -e.getValue()))
-            .collect(Collectors.toMap(
-                    HashMap.Entry::getKey,
-                    HashMap.Entry::getValue,
-                    (a, b) -> { throw new AssertionError(); },
-                    LinkedHashMap::new
-            ));
-            return sortedMap;
-        }
-
-
-        
+    private LinkedHashMap<String, Double> sortMap(HashMap<String, Double> unsortedMap){
+        LinkedHashMap<String, Double> sortedMap = unsortedMap.entrySet().stream()
+        .sorted(Comparator.comparingDouble(e -> e.getValue()))
+        .collect(Collectors.toMap(
+                HashMap.Entry::getKey,
+                HashMap.Entry::getValue,
+                (a, b) -> { throw new AssertionError(); },
+                LinkedHashMap::new
+        ));
+        return sortedMap;
     }
 }
