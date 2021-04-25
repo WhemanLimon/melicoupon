@@ -1,4 +1,4 @@
-package net.wheman.melicoupon;
+package net.wheman.melicoupon.coupon;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -13,9 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-
-import net.wheman.melicoupon.coupon.CouponController;
-import net.wheman.melicoupon.coupon.CouponRequest;
 
 @SpringBootTest
 public class CouponControllerTests {

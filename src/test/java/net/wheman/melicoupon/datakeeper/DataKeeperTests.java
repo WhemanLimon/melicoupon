@@ -1,4 +1,4 @@
-package net.wheman.melicoupon;
+package net.wheman.melicoupon.datakeeper;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import net.wheman.melicoupon.datakeeper.ItemMemory;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)

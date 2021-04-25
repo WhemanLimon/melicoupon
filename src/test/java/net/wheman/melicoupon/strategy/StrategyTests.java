@@ -1,4 +1,4 @@
-package net.wheman.melicoupon;
+package net.wheman.melicoupon.strategy;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,8 +7,6 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import net.wheman.melicoupon.strategy.StrategyFactory;
 
 @SpringBootTest
 public class StrategyTests {

@@ -1,4 +1,4 @@
-package net.wheman.melicoupon;
+package net.wheman.melicoupon.meli;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -8,8 +8,6 @@ import java.util.HashMap;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import net.wheman.melicoupon.meli.MeliService;
 
 @SpringBootTest
 public class MeliServiceTests {
